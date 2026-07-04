@@ -49,6 +49,12 @@ jobs:
         run: |
           npx cap sync android
 
+      - name: Ensure Gradle wrapper is executable
+        run: |
+          cd android
+          chmod +x gradlew
+          ls -la gradlew
+
       - name: Build Android (Gradle)
         run: |
           cd android
