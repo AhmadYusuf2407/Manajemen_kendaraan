@@ -40,8 +40,13 @@ jobs:
           export PATH="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH"
           yes | sdkmanager --sdk_root="$ANDROID_SDK_ROOT" --licenses || true
 
-      - name: Capacitor sync (copy web -> native)
+      - name: Ensure Capacitor Android platform and sync
         run: |
+          # If android native project isn't present, add the platform
+          if [ ! -d android ]; then
+            echo "Android folder not found — adding Capacitor Android platform"
+            npx cap add android || true
+          fi
           npx cap sync android
 
       - name: Ensure Gradle wrapper is executable
