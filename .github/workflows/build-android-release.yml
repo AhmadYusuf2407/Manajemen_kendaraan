@@ -9,7 +9,7 @@ jobs:
   build-release:
     runs-on: ubuntu-latest
     env:
-      ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
+      ANDROID_SDK_ROOT: ${{ github.workspace }}/android-sdk
       BUILD_TOOLS_VERSION: '33.0.2'
     steps:
       - name: Checkout
