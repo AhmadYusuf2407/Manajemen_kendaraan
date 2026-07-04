@@ -1,0 +1,6 @@
+{
+  "appId": "com.example.manajemenkendaraan",
+  "appName": "Manajemen Kendaraan",
+  "webDir": "public",
+  "bundledWebRuntime": false
+}

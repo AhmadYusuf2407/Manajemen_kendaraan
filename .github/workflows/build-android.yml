@@ -1,0 +1,61 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    env:
+      ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+
+      - name: Ensure web assets present
+        run: |
+          # If you have a build script, replace this with `npm run build`
+          ls -la public || true
+
+      - name: Install Android command line tools
+        run: |
+          sdk_root="$ANDROID_SDK_ROOT"
+          mkdir -p "$sdk_root"
+          cd "$RUNNER_TEMP"
+          curl -sSfL "https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip" -o cmdline-tools.zip
+          unzip -q cmdline-tools.zip -d "$sdk_root/cmdline-tools"
+          mv "$sdk_root/cmdline-tools/cmdline-tools" "$sdk_root/cmdline-tools/latest" || true
+          export PATH="$sdk_root/cmdline-tools/latest/bin:$PATH"
+          yes | "$sdk_root/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$sdk_root" "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+
+      - name: Accept Android SDK licenses
+        run: |
+          export PATH="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH"
+          yes | sdkmanager --sdk_root="$ANDROID_SDK_ROOT" --licenses || true
+
+      - name: Capacitor sync (copy web -> native)
+        run: |
+          npx cap sync android
+
+      - name: Build Android (Gradle)
+        run: |
+          cd android
+          ./gradlew assembleDebug --no-daemon --stacktrace --info
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: android/app/build/outputs/apk/debug/*.apk

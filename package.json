@@ -1,0 +1,22 @@
+{
+  "name": "manajemen-kendaraan",
+  "version": "1.0.0",
+  "description": "Aplikasi manajemen kendaraan pribadi dan logistik menggunakan Node.js dan Express.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "cap:init": "npx @capacitor/cli@latest init",
+    "cap:add-android": "npx cap add android",
+    "cap:open-android": "npx cap open android",
+    "cap:sync": "npx cap sync",
+    "cap:copy": "npx cap copy",
+    "build:apk": "powershell -ExecutionPolicy Bypass -File scripts\\build_apk.ps1"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.4.1",
+    "@capacitor/cli": "^8.4.1",
+    "@capacitor/core": "^8.4.1",
+    "express": "^4.18.4",
+    "sqlite3": "^5.1.6"
+  }
+}
