@@ -56,6 +56,20 @@ jobs:
           chmod +x gradlew
           ls -la gradlew
 
+      - name: Pre-download Gradle distribution (CI cache/workaround)
+        run: |
+          set -e
+          DIST_VER=gradle-8.14.3-all.zip
+          URL="https://services.gradle.org/distributions/${DIST_VER}"
+          OUT="$RUNNER_TEMP/$DIST_VER"
+          echo "Downloading $URL to $OUT"
+          curl -sSfL "$URL" -o "$OUT"
+          TARGET="$HOME/.gradle/wrapper/dists/gradle-8.14.3-all/manual"
+          mkdir -p "$TARGET"
+          unzip -q "$OUT" -d "$TARGET"
+          echo "Extracted to $TARGET"
+          ls -la "$TARGET"
+
       - name: Build Release (Gradle)
         run: |
           cd android
