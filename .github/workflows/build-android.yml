@@ -64,7 +64,14 @@ jobs:
       - name: Build Android (Gradle)
         run: |
           cd android
-          ./gradlew assembleDebug --no-daemon --stacktrace --info
+          ./gradlew assembleDebug --no-daemon --stacktrace --info --debug
+
+      - name: Upload Gradle daemon logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-daemon-logs
+          path: $HOME/.gradle/daemon/**/daemon-*.out.log
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
